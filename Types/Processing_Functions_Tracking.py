@@ -85,8 +85,8 @@ def graph_figure(robots,timer,frequency,code):
         name = 'Robots',
         mode = 'markers',
     )
-    x_max = 2000
-    y_max = 2000
+    x_max = 220
+    y_max = 220
     
     #creating the plotly figure with the robot data
     fig = go.Figure(
