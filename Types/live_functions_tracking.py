@@ -625,7 +625,7 @@ def G_transition(max_force,R,power):
                    G_transition (float): the G transition value for the current swarm setup
 
     '''
-    G_transition = (0.9*max_force*(R**power))/(2*math.sqrt(3))
+    G_transition = (max_force*(R**power))/(2*math.sqrt(3))
     return G_transition
 
 
