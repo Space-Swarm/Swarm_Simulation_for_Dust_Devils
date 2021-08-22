@@ -111,7 +111,7 @@ max_velocity : float
         self.counter = 0
         self.lattice_constants = lattice_constants
         self.lattice = lattice_constants[0]
-        self.honeycomb = False
+        self.honeycomb = True
         
     def update_position(self,x_position,y_position):
         """
@@ -178,11 +178,13 @@ max_velocity : float
             None
         """
         self.counter = self.counter+1
-        if(self.counter == 0):
+        if(self.counter == 5 or self.counter == 6 or self.counter == 7 or self.counter == 4):
             self.honeycomb = False
             self.set_lattice_mode()
-        if(self.counter > 100):
+        elif(self.counter>10):
             self.reset_counter()
+            self.set_lattice_mode()
+        else:
             self.honeycomb = True
             self.set_lattice_mode()
             
@@ -204,7 +206,7 @@ max_velocity : float
         -------
             None
         """
-        self.counter = -99
+        self.counter = -2
         
         
     def walk_reset(self,walk_time,heading):
