@@ -62,7 +62,7 @@ max_velocity : float
               
         
     """
-    def __init__(self,x_position,y_position,mass,x_velocity,y_velocity,max_velocity,walk_time,heading,identifier,R):
+    def __init__(self,x_position,y_position,mass,x_velocity,y_velocity,max_velocity,walk_time,heading,identifier,R,lattice_constants):
         """
         Initialises the robot object and its attributes
 
@@ -108,6 +108,11 @@ max_velocity : float
         self.R = R
         self.detected = False
         self.countdown = 0
+        self.counter = 0
+        self.lattice_constants = lattice_constants
+        self.lattice = lattice_constants[0]
+        self.honeycomb = True
+        
     def update_position(self,x_position,y_position):
         """
         Updates the x and y positions of the robot
@@ -125,6 +130,8 @@ max_velocity : float
         """
         self.x = x_position
         self.y = y_position
+   
+           
         
     def update_velocity(self,x_velocity,y_velocity):
         """
@@ -157,6 +164,50 @@ max_velocity : float
             None
         """
         self.timer = self.timer+1
+    
+    def update_counter(self):
+        """
+        Updates the counter by incrementing it by 1
+
+        Parameters
+        ----------
+            None
+          
+        Returns
+        -------
+            None
+        """
+        self.counter = self.counter+1
+        if(self.counter == 5 or self.counter == 6 or self.counter == 7 or self.counter == 4):
+            self.honeycomb = False
+            self.set_lattice_mode()
+        elif(self.counter>10):
+            self.reset_counter()
+            self.set_lattice_mode()
+        else:
+            self.honeycomb = True
+            self.set_lattice_mode()
+            
+    def set_lattice_mode(self):
+        if(self.honeycomb):
+            self.lattice = self.lattice_constants[0]
+        else:
+            self.lattice = self.lattice_constants[1]
+    
+    def reset_counter(self):
+        """
+        Resets the counter to 0
+
+        Parameters
+        ----------
+            None
+          
+        Returns
+        -------
+            None
+        """
+        self.counter = -2
+        
         
     def walk_reset(self,walk_time,heading):
         """
