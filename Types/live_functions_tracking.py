@@ -48,7 +48,7 @@ from ast import literal_eval
 
 
 #Function to initialise robots
-def initialise(robot_number,length,initial,robot_speed,R):
+def initialise(robot_number,length,initial,robot_speed,R,random_seed,lattice_constants):
     '''
     Returns the list of robot objects
 
@@ -60,7 +60,7 @@ def initialise(robot_number,length,initial,robot_speed,R):
                    robots (list): List of robot objects
     '''
     robots = []
-    X,Y = random_position(robot_number,-initial,initial)
+    X,Y = random_position(robot_number,-initial,initial,random_seed)
     cnt = 0
     for x,y in zip(X,Y):
         walk_time = int(np.random.normal(5,3,1))
@@ -70,12 +70,13 @@ def initialise(robot_number,length,initial,robot_speed,R):
         else:
             identifier = 1
             cnt = -1
-        robots.append(Robot(x,y,1.0,0,0,robot_speed, walk_time,heading,identifier,R))
+        robots.append(Robot(x,y,1.0,0,0,robot_speed, walk_time,heading,identifier,R,lattice_constants))
+        print(identifier)
         cnt = cnt+1
     return robots
 
 #Function to return randomised x,y position array
-def random_position(robot_number,start,finish):
+def random_position(robot_number,start,finish,random_seed):
     '''
     Returns random position array of x and y
 
@@ -87,13 +88,19 @@ def random_position(robot_number,start,finish):
                    x (integer list): List of random x positions
                    y (integer list): List of random y positions
     '''
-    
-    x = []
+    np.random.seed(random_seed)
+    x = list(np.random.normal(loc = 0, scale = finish, size = (robot_number)))
+    y = list(np.random.normal(loc = 0, scale = finish, size = (robot_number)))
+    """x = []
     y = []
     #generating random robot positions and appending them to a list which is returned
     for i in range(int(robot_number)):
+        np.random.normal(loc = 0, scale = 20, size = 
         x.append(random.randint(start,finish))
-        y.append(random.randint(start,finish))
+        y.append(random.randint(start,finish))"""
+    print("Initialising..")
+    print(x)
+    print(y)
     return x,y
 
 #Function to return square grid of x,y positions
