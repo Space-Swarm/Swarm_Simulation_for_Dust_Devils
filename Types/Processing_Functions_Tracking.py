@@ -63,20 +63,33 @@ def graph_figure(robots,timer,frequency,code):
     
 
     position_robot = robots[:,:,timer*frequency]
-    x_max = max(abs(robots[0,:,timer]))
+    x_max = max((robots[0,:,timer]))
     x_mag = math.floor(math.log((x_max),10))
-    y_max = max(abs(robots[1,:,timer]))
-
+    x_min = min((robots[1,:,timer]))
+    y_max = max((robots[1,:,timer]))
+    y_min = min((robots[1,:,timer]))
+    
     
     y_mag = math.floor(math.log((y_max),10))
-    if(x_max > 1000):
+    """if(x_max > 1000):
         x_max = math.ceil(x_max/(10**x_mag))*(10**x_mag)
     if(y_max > 1000):
         y_max = math.ceil(y_max/(10**y_mag))*(10**y_mag)
     if(x_max < 1000):
         x_max = 1000
     if(y_max < 1000):
-        y_max = 1000
+        y_max = 1000"""
+    if(x_max > 1000 or y_max > 1000 or x_min < 1000 or y_min < 1000):
+        largest_term = max(abs[x_max,x_min,y_max,y_min])
+        mag = math.floor(math.log((largest_term),10))
+        maximum = math.ceil(max/(10**mag))*(10**mag)
+        x_max,y_max = maximum
+        x_min, y_min = -maximum
+        
+    x_max = 1000
+    x_min = 0
+    y_max = 1000
+    y_min = 0
     x_max = x_max/frequency
     #creating scatter plot of robots
     data = go.Scatter(
@@ -88,7 +101,7 @@ def graph_figure(robots,timer,frequency,code):
     
     #creating the plotly figure with the robot data
     fig = go.Figure(
-        { "data": data , "layout": go.Layout(yaxis=dict(range=[-y_max, y_max]),xaxis = dict(range=[-x_max,x_max]))
+        { "data": data , "layout": go.Layout(yaxis=dict(range=[y_min, y_max]),xaxis = dict(range=[x_min,x_max]))
         }
     )
 
