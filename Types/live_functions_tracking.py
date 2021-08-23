@@ -89,8 +89,8 @@ def random_position(robot_number,start,finish,random_seed):
                    y (integer list): List of random y positions
     '''
     np.random.seed(random_seed)
-    x = list(np.random.normal(loc = 500, scale = finish, size = (robot_number)))
-    y = list(np.random.normal(loc = 500, scale = finish, size = (robot_number)))
+    x = list(np.random.normal(loc = 0, scale = finish, size = (robot_number)))
+    y = list(np.random.normal(loc = 0, scale = finish, size = (robot_number)))
     """x = []
     y = []
     #generating random robot positions and appending them to a list which is returned
