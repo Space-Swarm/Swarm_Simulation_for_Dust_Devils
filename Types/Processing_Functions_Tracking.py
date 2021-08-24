@@ -100,6 +100,8 @@ def graph_figure(robots,timer,frequency,code):
         { "data": data , "layout": go.Layout(yaxis=dict(range=[-y_max, y_max]),xaxis = dict(range=[-x_max,x_max]))
         }
     )
+    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='LightPink')
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='LightPink')
 
     #updating layout with circles and different formatting'''
     fig.update_layout(title="<b>Physics Based Swarm Experiment "+ code + "</b>",
@@ -130,7 +132,82 @@ def graph_figure(robots,timer,frequency,code):
     fig.update_yaxes(showline=True, linewidth=2, linecolor='black',mirror=True)
     
     return fig
+
+def graph_figure_area_coverage(robots,timer,frequency,code):
+    #initialising global variables
     
+
+    position_robot = robots[:,:,timer*frequency]
+    x_max = max((robots[0,:,timer]))
+    x_mag = math.floor(math.log((x_max),10))
+    y_max = max((robots[1,:,timer]))
+    
+    
+    y_mag = math.floor(math.log((y_max),10))
+    if(x_max > 500):
+        x_max = math.ceil(x_max/(10**x_mag))*(10**x_mag)
+    if(y_max > 500):
+        y_max = math.ceil(y_max/(10**y_mag))*(10**y_mag)
+    if(x_max < 500):
+        x_max = 500
+    if(y_max < 500):
+        y_max = 500
+    """if(x_max > 1000 or y_max > 1000 or x_min < 1000 or y_min < 1000):
+        largest_term = max(abs[x_max,x_min,y_max,y_min])
+        mag = math.floor(math.log((largest_term),10))
+        maximum = math.ceil(max/(10**mag))*(10**mag)
+        x_max,y_max = maximum
+        x_min, y_min = -maximum
+       """ 
+
+    y_min = 0
+    x_max = x_max/frequency
+    #creating scatter plot of robots
+    data = go.Scatter(
+        x=list(position_robot[0]/frequency),
+        y=list(position_robot[1]),
+        name = 'Robots',
+        mode = 'markers',
+    )
+    
+    #creating the plotly figure with the robot data
+    fig = go.Figure(
+        { "data": data , "layout": go.Layout(yaxis=dict(range=[-y_max, y_max]),xaxis = dict(range=[-x_max,x_max]))
+        }
+    )
+
+    #updating layout with circles and different formatting'''
+    fig.update_layout(title="<b>Physics Based Swarm Experiment "+ code + "</b>",
+    title_x=0.5,
+    xaxis_title="X Position (m)",
+    yaxis_title="Y Position (m)",
+    margin=dict(
+        t=50, # top margin: 30px, you want to leave around 30 pixels to
+              # display the modebar above the graph.
+         # bottom margin: 10px
+        l=10, # left margin: 10px
+        r=10, # right margin: 10px
+    ),
+
+#     height=900,width=1150,
+     xaxis = dict(
+         tickmode = 'linear',
+         tick0 = 0,
+         dtick = x_max/10
+     ),
+                       yaxis = dict(
+         tickmode = 'linear',
+         tick0 = 0,
+         dtick = y_max/10
+     )
+                     )
+    fig.update_xaxes(showline=True, linewidth=2, linecolor='black',mirror=True)
+    fig.update_yaxes(showline=True, linewidth=2, linecolor='black',mirror=True)
+    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='black')
+    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='black')
+    fig.update_xaxes(tick0=0, dtick=10)
+    fig.update_yaxes(tick0=0, dtick=10)
+    return fig
 
 
 def performance_graph(fitness,x_values,frequency,code,x_title,y_title):
