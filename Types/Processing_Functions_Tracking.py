@@ -131,112 +131,168 @@ def graph_figure(robots,timer,frequency,code):
     fig.update_yaxes(showline=True, linewidth=2, linecolor='black',mirror=True)
     
     return fig
-
-def graph_figure_split(type_0,type_1,frequency,code):
-    
-    fig = go.figure()
-    y_max = 500
-    x_max = 500
-    #creating scatter plot of robots
-    print(type_0)
+def graph_types(x_0,y_0,x_1,y_1,maximum,length,title,annotation):
+    x_overall = np.concatenate((x_0, x_1), axis=None)
+    y_overall = np.concatenate((y_0,y_1),axis = None)
+    fig = go.Figure()
     fig.add_trace(go.Scatter(
-        x=list(type_0[0]),
-        y=list(type_0[1]),
-        name = 'Robots',
-        mode = 'markers',
+        x=x_0,
+        y=y_0,
+        mode='markers',
+        showlegend=True,
+        name="Robot Type 0",
+        marker=dict(
+            symbol='circle',
+            opacity=0.8,
+            color='red',
+            size=8,
+            line=dict(width=1),
+        )
     ))
     fig.add_trace(go.Scatter(
-        x=list(type_1[0]),
-        y=list(type_1[1]),
-        name = 'Robots',
-        mode = 'markers',
+        x=x_1,
+        y=y_1,
+        mode='markers',
+        showlegend=True,
+        name="Robot Type 1",
+        marker=dict(
+            symbol='circle',
+            opacity=0.8,
+            color='cyan',
+            size=8,
+            line=dict(width=1),
+        )
     ))
 
-    #updating layout with circles and different formatting'''
-    fig.update_layout(yaxis=dict(range=[-y_max, y_max]),xaxis = dict(range=[-x_max,x_max]),title="<b>Physics Based Swarm Experiment: "+ code + "</b>",
-    title_x=0.5,
-    xaxis_title="X Position (m)",
-    yaxis_title="Y Position (m)",
-    margin=dict(
-        t=50, # top margin: 30px, you want to leave around 30 pixels to
-              # display the modebar above the graph.
-         # bottom margin: 10px
-        l=10, # left margin: 10px
-        r=10, # right margin: 10px
-    ),
+    fig.add_trace((go.Histogram2d(x=x_overall, y=y_overall,
+            autobinx=False,
+            xbins=dict(start=-maximum, end=maximum, size=2*maximum/length),
+            autobiny=False,
+            ybins=dict(start=-maximum, end=maximum, size=2*maximum/length),
+            zmax=1,            
+            zauto=False,
+            showscale = False,
+            colorscale=["white","white"],
+            )))
+    fig.update_xaxes(showgrid=True,showline=True, linewidth=2, linecolor='black',mirror=True)
+    fig.update_yaxes(showgrid=True,showline=True, linewidth=2, linecolor='black',mirror=True)
+    fig.update_xaxes(showgrid=True,zeroline=False, gridwidth=1, gridcolor='black')
+    fig.update_yaxes(showgrid=True,zeroline=False, gridwidth=1, gridcolor='black')
+    fig.update_traces(opacity=0.4, selector=dict(type='histogram2d'))
+    fig.update_layout(
+    #     height=900,width=1150,
+         xaxis = dict(
+             tickmode = 'linear',
+             tick0 = 0,
+             dtick = maximum/(length*0.5)
+         ),
+                           yaxis = dict(
+             tickmode = 'linear',
+             tick0 = 0,
+             dtick = maximum/(length*0.5)
+         ),
+        title = title,
+        xaxis_title="X Position (m)",
+        yaxis_title="Y Position (m)",
+        title_x=0.5
+    )
+    fig.add_annotation(text=annotation,
+                align='center',
+                showarrow=False,
+                xref='paper',
+                yref='paper',
+                x=1.2,
+                y=0.8,
+                bordercolor='black',
+                borderwidth=2, 
+                font=dict(
 
-#     height=900,width=1150,
-     xaxis = dict(
-         tickmode = 'linear',
-         tick0 = 0,
-         dtick = x_max/10
-     ),
-                       yaxis = dict(
-         tickmode = 'linear',
-         tick0 = 0,
-         dtick = y_max/10
-     )
-                     )
-    fig.update_xaxes(showline=True, linewidth=2, linecolor='black',mirror=True)
-    fig.update_yaxes(showline=True, linewidth=2, linecolor='black',mirror=True)
-    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='black')
-    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='black')
-    fig.update_xaxes(tick0=0, dtick=100)
-    fig.update_yaxes(tick0=0, dtick=100)
+        size=8,
+        
+    ))
     return fig
 
-def graph_figure_area_coverage(type_0,type_1,frequency,code):
-    
-    fig = go.figure()
-    y_max = 500
-    x_max = 500
-    #creating scatter plot of robots
-    print(type_0)
+def graph_area_coverage(x_0,y_0,x_1,y_1,maximum,length,title,annotation):
+    x_overall = np.concatenate((x_0, x_1), axis=None)
+    y_overall = np.concatenate((y_0,y_1),axis = None)
+    fig = go.Figure()
     fig.add_trace(go.Scatter(
-        x=list(type_0[0]),
-        y=list(type_0[1]),
-        name = 'Robots',
-        mode = 'markers',
+        x=x_0,
+        y=y_0,
+        mode='markers',
+        showlegend=True,
+        name="Robot Type 0",
+        marker=dict(
+            symbol='circle',
+            opacity=0.8,
+            color='red',
+            size=8,
+            line=dict(width=1),
+        )
     ))
     fig.add_trace(go.Scatter(
-        x=list(type_1[0]),
-        y=list(type_1[1]),
-        name = 'Robots',
-        mode = 'markers',
+        x=x_1,
+        y=y_1,
+        mode='markers',
+        showlegend=True,
+        name="Robot Type 1",
+        marker=dict(
+            symbol='circle',
+            opacity=0.8,
+            color='cyan',
+            size=8,
+            line=dict(width=1),
+        )
     ))
 
-    #updating layout with circles and different formatting'''
-    fig.update_layout(yaxis=dict(range=[-y_max, y_max]),xaxis = dict(range=[-x_max,x_max]),title="<b>Physics Based Swarm Experiment: "+ code + "</b>",
-    title_x=0.5,
-    xaxis_title="X Position (m)",
-    yaxis_title="Y Position (m)",
-    margin=dict(
-        t=50, # top margin: 30px, you want to leave around 30 pixels to
-              # display the modebar above the graph.
-         # bottom margin: 10px
-        l=10, # left margin: 10px
-        r=10, # right margin: 10px
-    ),
+    fig.add_trace((go.Histogram2d(x=x_overall, y=y_overall,
+            autobinx=False,
+            xbins=dict(start=-maximum, end=maximum, size=2*maximum/length),
+            autobiny=False,
+            ybins=dict(start=-maximum, end=maximum, size=2*maximum/length),
+            zmax=1,            
+            zauto=False,
+            showscale = False,
+            colorscale=["white","black"],
+            )))
+    fig.update_xaxes(showgrid=True,showline=True, linewidth=2, linecolor='black',mirror=True)
+    fig.update_yaxes(showgrid=True,showline=True, linewidth=2, linecolor='black',mirror=True)
+    fig.update_xaxes(showgrid=True,zeroline=False, gridwidth=1, gridcolor='black')
+    fig.update_yaxes(showgrid=True,zeroline=False, gridwidth=1, gridcolor='black')
+    fig.update_traces(opacity=0.4, selector=dict(type='histogram2d'))
+    fig.update_layout(
+    #     height=900,width=1150,
+         xaxis = dict(
+             tickmode = 'linear',
+             tick0 = 0,
+             dtick = maximum/(length*0.5)
+         ),
+                           yaxis = dict(
+             tickmode = 'linear',
+             tick0 = 0,
+             dtick = maximum/(length*0.5)
+         ),
+        title = title,
+        xaxis_title="X Position (m)",
+        yaxis_title="Y Position (m)",
+        title_x=0.5
+    )
+    fig.add_annotation(text=annotation,
+                align='center',
+                showarrow=False,
+                xref='paper',
+                yref='paper',
+                x=1.25,
+                y=0.8,
+                bordercolor='black',
+                borderwidth=2, 
+                  font=dict(
 
-#     height=900,width=1150,
-     xaxis = dict(
-         tickmode = 'linear',
-         tick0 = 0,
-         dtick = x_max/10
-     ),
-                       yaxis = dict(
-         tickmode = 'linear',
-         tick0 = 0,
-         dtick = y_max/10
-     )
-                     )
-    """fig.update_xaxes(showline=True, linewidth=2, linecolor='black',mirror=True)
-    fig.update_yaxes(showline=True, linewidth=2, linecolor='black',mirror=True)
-    fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='black')
-    fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='black')"""
-    fig.update_xaxes(tick0=0, dtick=100)
-    fig.update_yaxes(tick0=0, dtick=100)
+        size=8,
+        
+    ))
     return fig
+
 
 
 def performance_graph(fitness,x_values,frequency,code,x_title,y_title):
