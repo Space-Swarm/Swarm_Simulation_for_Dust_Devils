@@ -134,6 +134,7 @@ def graph_figure(robots,timer,frequency,code):
 def graph_types(x_0,y_0,x_1,y_1,maximum,length,title,annotation):
     x_overall = np.concatenate((x_0, x_1), axis=None)
     y_overall = np.concatenate((y_0,y_1),axis = None)
+    #fig = go.Figure(go.Layout(yaxis=dict(range=[-maximum, maximum]),xaxis = dict(range=[-maximum,maximum])))
     fig = go.Figure()
     fig.add_trace(go.Scatter(
         x=x_0,
@@ -181,12 +182,12 @@ def graph_types(x_0,y_0,x_1,y_1,maximum,length,title,annotation):
     fig.update_traces(opacity=0.4, selector=dict(type='histogram2d'))
     fig.update_layout(
     #     height=900,width=1150,
-         xaxis = dict(
+         xaxis = dict(range=[-maximum, maximum],
              tickmode = 'linear',
              tick0 = 0,
              dtick = maximum/(length*0.5)
          ),
-                           yaxis = dict(
+                           yaxis = dict(range=[-maximum, maximum],
              tickmode = 'linear',
              tick0 = 0,
              dtick = maximum/(length*0.5)
@@ -215,6 +216,7 @@ def graph_types(x_0,y_0,x_1,y_1,maximum,length,title,annotation):
 def graph_area_coverage(x_0,y_0,x_1,y_1,maximum,length,title,annotation):
     x_overall = np.concatenate((x_0, x_1), axis=None)
     y_overall = np.concatenate((y_0,y_1),axis = None)
+    #fig = go.Figure(go.Layout(yaxis=dict(range=[-maximum, maximum]),xaxis = dict(range=[-maximum,maximum])))
     fig = go.Figure()
     fig.add_trace(go.Scatter(
         x=x_0,
@@ -262,12 +264,12 @@ def graph_area_coverage(x_0,y_0,x_1,y_1,maximum,length,title,annotation):
     fig.update_traces(opacity=0.4, selector=dict(type='histogram2d'))
     fig.update_layout(
     #     height=900,width=1150,
-         xaxis = dict(
+         xaxis = dict(range=[-maximum, maximum],
              tickmode = 'linear',
              tick0 = 0,
              dtick = maximum/(length*0.5)
          ),
-                           yaxis = dict(
+         yaxis = dict(range=[-maximum, maximum],
              tickmode = 'linear',
              tick0 = 0,
              dtick = maximum/(length*0.5)
@@ -282,7 +284,7 @@ def graph_area_coverage(x_0,y_0,x_1,y_1,maximum,length,title,annotation):
                 showarrow=False,
                 xref='paper',
                 yref='paper',
-                x=1.25,
+                x=1.28,
                 y=0.8,
                 bordercolor='black',
                 borderwidth=2, 
