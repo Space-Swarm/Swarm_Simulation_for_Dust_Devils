@@ -178,6 +178,15 @@ max_velocity : float
             None
         """
         self.counter = self.counter+1
+        """if(self.counter == 5 or self.counter == 6 or self.counter == 7 or self.counter == 4):
+            self.honeycomb = False
+            self.set_lattice_mode()
+        elif(self.counter>10):
+            self.reset_counter()
+            self.set_lattice_mode()
+        else:
+            self.honeycomb = True
+            self.set_lattice_mode()"""
         if(self.counter == 5 or self.counter == 6 or self.counter == 7 or self.counter == 4):
             self.honeycomb = False
             self.set_lattice_mode()
