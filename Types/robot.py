@@ -187,13 +187,18 @@ max_velocity : float
         else:
             self.honeycomb = True
             self.set_lattice_mode()
-            
+    
     def set_lattice_mode(self):
         if(self.honeycomb):
             self.lattice = self.lattice_constants[0]
         else:
             self.lattice = self.lattice_constants[1]
-    
+    def set_lattice_switch(self):
+        self.Honeycomb = not self.Honeycomb
+        if(self.honeycomb):
+            self.lattice = self.lattice_constants[0]
+        else:
+            self.lattice = self.lattice_constants[1]
     def reset_counter(self):
         """
         Resets the counter to 0
