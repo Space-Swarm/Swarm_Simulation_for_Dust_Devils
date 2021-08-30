@@ -178,15 +178,7 @@ max_velocity : float
             None
         """
         self.counter = self.counter+1
-        """if(self.counter == 5 or self.counter == 6 or self.counter == 7 or self.counter == 4):
-            self.honeycomb = False
-            self.set_lattice_mode()
-        elif(self.counter>10):
-            self.reset_counter()
-            self.set_lattice_mode()
-        else:
-            self.honeycomb = True
-            self.set_lattice_mode()"""
+        """My method
         if(self.counter == 5 or self.counter == 6 or self.counter == 7 or self.counter == 4):
             self.honeycomb = False
             self.set_lattice_mode()
@@ -195,13 +187,22 @@ max_velocity : float
             self.set_lattice_mode()
         else:
             self.honeycomb = True
+            self.set_lattice_mode()"""
+        if(self.counter == 0):
+            self.honeycomb = False
             self.set_lattice_mode()
+        if(self.counter>100):
+            self.honeycomb = True
+            self.reset_counter()
+            self.set_lattice_mode()
+        
     
     def set_lattice_mode(self):
         if(self.honeycomb):
             self.lattice = self.lattice_constants[0]
         else:
             self.lattice = self.lattice_constants[1]
+            
     def set_lattice_switch(self):
         self.Honeycomb = not self.Honeycomb
         if(self.honeycomb):
@@ -220,7 +221,7 @@ max_velocity : float
         -------
             None
         """
-        self.counter = -2
+        self.counter = -100
         
         
     def walk_reset(self,walk_time,heading):
