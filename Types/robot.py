@@ -177,7 +177,9 @@ max_velocity : float
         -------
             None
         """
-        self.counter = self.counter+1
+        #print("Counter: ",self.counter)
+        #self.counter = self.counter+1
+        
         """My method
         if(self.counter == 5 or self.counter == 6 or self.counter == 7 or self.counter == 4):
             self.honeycomb = False
@@ -190,11 +192,15 @@ max_velocity : float
             self.set_lattice_mode()"""
         if(self.counter == 0):
             self.honeycomb = False
-            self.set_lattice_mode()
+            self.lattice = self.lattice_constants[1]
+            #self.set_lattice_mode()
         if(self.counter>100):
             self.honeycomb = True
+            self.lattice = self.lattice_constants[0]
             self.reset_counter()
-            self.set_lattice_mode()
+            #self.set_lattice_mode()
+    def increment_counter(self):
+        self.counter = self.counter+1
         
     
     def set_lattice_mode(self):
