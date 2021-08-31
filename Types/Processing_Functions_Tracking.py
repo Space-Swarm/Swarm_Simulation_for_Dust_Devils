@@ -340,6 +340,87 @@ def performance_graph(fitness,x_values,frequency,code,x_title,y_title):
     
     return fig
 
+def performance_graph_no_lines(fitness,x_values,frequency,code,x_title,y_title):
+    #initialising global variables
+    print(code)
+    if(code == ""):
+        code = ""
+    else:
+        code = " with " + code
+    
+    #creating scatter plot of robots
+    data = go.Scatter(
+        x=x_values/frequency,
+        y=fitness,
+        mode = 'markers',
+    )
+    
+    #creating the plotly figure with the robot data
+    fig = go.Figure(
+        { "data": data
+        }
+    )
+    
+    #updating layout with circles and different formatting'''
+    fig.update_layout(title="<b>" + y_title + " versus " + x_title + " for Experiment" + code + "</b>",
+    title_x=0.5,
+    xaxis_title=x_title,
+    yaxis_title=y_title,
+    margin=dict(
+        t=50, # top margin: 30px, you want to leave around 30 pixels to
+              # display the modebar above the graph.
+         # bottom margin: 10px
+        l=10, # left margin: 10px
+        r=10, # right margin: 10px
+    ),
+    height=900,width=1150,
+                      yaxis = {'range': [0, math.ceil(np.max(fitness)+1)],}
+                            
+    
+                     )
+    fig.update_xaxes(showline=True, linewidth=2, linecolor='black',mirror=True)
+    fig.update_yaxes(showline=True, linewidth=2, linecolor='black',mirror=True)
+    
+    return fig
+
+def performance_graph_no_frills(fitness,x_values,frequency,title,x_title,y_title):
+    #initialising global variables
+    
+    #creating scatter plot of robots
+    data = go.Scatter(
+        x=x_values/frequency,
+        y=fitness,
+        mode = 'lines+markers',
+    )
+    
+    #creating the plotly figure with the robot data
+    fig = go.Figure(
+        { "data": data
+        }
+    )
+    
+    #updating layout with circles and different formatting'''
+    fig.update_layout(title="<b>" + y_title + " versus " + x_title + " for Experiment" + code + "</b>",
+    title_x=0.5,
+    xaxis_title=x_title,
+    yaxis_title=y_title,
+    margin=dict(
+        t=50, # top margin: 30px, you want to leave around 30 pixels to
+              # display the modebar above the graph.
+         # bottom margin: 10px
+        l=10, # left margin: 10px
+        r=10, # right margin: 10px
+    ),
+    height=900,width=1150,
+                      yaxis = {'range': [0, math.ceil(np.max(fitness)+1)],}
+                            
+    
+                     )
+    fig.update_xaxes(showline=True, linewidth=2, linecolor='black',mirror=True)
+    fig.update_yaxes(showline=True, linewidth=2, linecolor='black',mirror=True)
+    
+    return fig
+
 def multiple_graphs(performance_array,timestep,code,x_title,y_title,labels):
     print(performance_array)
     print(len(performance_array))
