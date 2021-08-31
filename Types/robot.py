@@ -220,7 +220,7 @@ max_velocity : float
         -------
             None
         """
-        self.counter = -2
+        self.counter = -10
         
         
     def walk_reset(self,walk_time,heading):

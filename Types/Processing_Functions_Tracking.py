@@ -393,6 +393,22 @@ t=260, # top margin: 30px, you want to leave around 30 pixels to
     fig.update_yaxes(showline=True, linewidth=2, linecolor='black', mirror=True)
     fig.update_xaxes(showline=True, linewidth=2, linecolor='black', mirror=True)
     return fig
+
+def table_figure_area(robots,timer,frequency,constants,min_neighbours,cluster_average):
+    fig = go.Figure(data=[go.Table(header=dict(values=['<b>Simulation Parameters</b>','<b>Values</b>'],
+                            line_color='black',
+                            font=dict(color='black', size=17)),
+                            cells=dict(values=[[ '<b>Simulation Timestep (h:min:s)</b>','<b>Number of Robots</b>','<b>Timestep Size (s) </b>','<b>Communication Range (m)</b>', '<b>Gravitational Constant</b>','<b>Power</b>','<b>Max Force (N)</b>', '<b>Max Speed (m/s)</b>', '<b>Minimum Neighbour Average (m)</b>', '<b>Average Cluster Size</b>'], [str(datetime.timedelta(seconds=timer)),len(robots[0,:,timer*frequency]),round(1/frequency,2),array_check(constants.loc["Communication Range"].values,timer*frequency),array_check(constants.loc["G"].values,timer*frequency),array_check(constants.loc["Power"].values,timer*frequency),array_check(constants.loc["Max Force"].values,timer*frequency),array_check(constants.loc["Max Speed"].values,timer*frequency),round(min_neighbours[timer*frequency],2),cluster_average[timer*frequency]]],align='center',line_color='black'))])
+    fig.update_layout(width = 650, height = 800,margin=dict(
+t=260, # top margin: 30px, you want to leave around 30 pixels to
+              # display the modebar above the graph.
+        b=10, # bottom margin: 10px
+        l=10, # left margin: 10px
+        r=10,
+    ))
+    fig.update_yaxes(showline=True, linewidth=2, linecolor='black', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=2, linecolor='black', mirror=True)
+    return fig
     
 #function to combine the table and graph images
 def combine(graph_path,table_path):
@@ -400,6 +416,6 @@ def combine(graph_path,table_path):
     image_table = Image.open(table_path)
     new1 = Image.new('RGB', (image_graph.width + image_table.width, min(image_graph.height,image_table.height)))
     new1.paste(image_graph, (0, 0))
-    new1.paste(image_table, (image_graph.width,((image_graph.height-image_table.height)//2)-100))
+    new1.paste(image_table, (image_graph.width,((image_graph.height-image_table.height)//2)-50))
     new1.save(graph_path)
     os.remove(table_path)
