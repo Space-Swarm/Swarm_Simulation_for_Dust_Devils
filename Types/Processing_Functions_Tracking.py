@@ -63,9 +63,9 @@ def graph_figure(robots,timer,frequency,code):
     
 
     position_robot = robots[:,:,timer*frequency]
-    x_max = max((robots[0,:,timer]))
+    x_max = max(abs(robots[0,:,timer]))
     x_mag = math.floor(math.log((x_max),10))
-    y_max = max((robots[1,:,timer]))
+    y_max = max(abs(robots[1,:,timer]))
     
     
     y_mag = math.floor(math.log((y_max),10))
