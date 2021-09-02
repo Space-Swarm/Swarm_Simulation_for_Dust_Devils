@@ -295,9 +295,67 @@ def graph_area_coverage(x_0,y_0,x_1,y_1,maximum,length,title,annotation):
     ))
     return fig
 
+def performance_graph_detailed(fitness,x_values,frequency,code,x_title,y_title):
+    x_max = max(abs(x))
+    x_mag = math.floor(math.log((x_max),10))
+    y_max = max(abs(fitness))
+    y_mag = math.floor(math.log((y_max),10)
 
-
+    x_max = math.ceil(x_max/(10**x_mag))*(10**x_mag)
+    y_max = math.ceil(y_max/(10**y_mag))*(10**y_mag)
+    #initialising global variables
+    print(code)
+    if(code == ""):
+        code = ""
+    else:
+        code = " with " + code
+    
+    #creating scatter plot of robots
+    data = go.Scatter(s
+        x=x_values/frequency,
+        y=fitness,
+        mode = 'lines+markers',
+    )
+    
+    #creating the plotly figure with the robot data
+    fig = go.Figure(
+        { "data": data
+        }
+    )
+    
+    #updating layout with circles and different formatting'''
+    fig.update_layout(title="<b>" + y_title + " versus " + x_title + " for Experiment" + code + "</b>",
+    title_x=0.5,
+    xaxis_title=x_title,
+    yaxis_title=y_title,
+    margin=dict(
+        t=50, # top margin: 30px, you want to leave around 30 pixels to
+              # display the modebar above the graph.
+         # bottom margin: 10px
+        l=10, # left margin: 10px
+        r=10, # right margin: 10px
+    ),
+    height=900,width=1150,
+                      xaxis = dict(range=[-maximum, maximum],
+             tickmode = 'linear',
+             tick0 = 0,
+             dtick = maximum/(length*0.5)
+         ),
+         yaxis = dict(range=[-maximum, maximum],
+             tickmode = 'linear',
+             tick0 = 0,
+             dtick = maximum/(length*0.5)
+         ),)
+                            
+    
+                     )
+    fig.update_xaxes(showline=True, linewidth=2, linecolor='black',mirror=True)
+    fig.update_yaxes(showline=True, linewidth=2, linecolor='black',mirror=True)
+    
+    return fig
+ 
 def performance_graph(fitness,x_values,frequency,code,x_title,y_title):
+    
     #initialising global variables
     print(code)
     if(code == ""):

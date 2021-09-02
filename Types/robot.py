@@ -62,7 +62,7 @@ max_velocity : float
               
         
     """
-    def __init__(self,x_position,y_position,mass,x_velocity,y_velocity,max_velocity,walk_time,heading,identifier,R,lattice_constants):
+    def __init__(self,x_position,y_position,mass,x_velocity,y_velocity,max_velocity,walk_time,heading,identifier,R,lattice_constants,G):
         """
         Initialises the robot object and its attributes
 
@@ -112,6 +112,7 @@ max_velocity : float
         self.lattice_constants = lattice_constants
         self.lattice = lattice_constants[0]
         self.honeycomb = True
+        self.G = G
         
     def update_position(self,x_position,y_position):
         """

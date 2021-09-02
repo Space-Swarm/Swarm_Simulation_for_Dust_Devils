@@ -48,7 +48,7 @@ from ast import literal_eval
 
 
 #Function to initialise robots
-def initialise(robot_number,length,initial,robot_speed,R,random_seed,lattice_constants):
+def initialise(robot_number,length,initial,robot_speed,R,random_seed,lattice_constants,G):
     '''
     Returns the list of robot objects
 
@@ -70,7 +70,7 @@ def initialise(robot_number,length,initial,robot_speed,R,random_seed,lattice_con
         else:
             identifier = 1
             cnt = -1
-        robots.append(Robot(x,y,1.0,0,0,robot_speed, walk_time,heading,identifier,R,lattice_constants))
+        robots.append(Robot(x,y,1.0,0,0,robot_speed, walk_time,heading,identifier,R,lattice_constants,G))
         print(identifier)
         cnt = cnt+1
     return robots
@@ -483,7 +483,7 @@ def dust_check(dust_devils,robot,detection_range,timestep,set_R,swarm,multiply,R
     #returning the two metrics
     return collision_metric,detection_metric
 
-def update_decay(swarm,R):
+def update_decay(swarm,R,G):
     #looping through all of the robots in the swarm
     for i in range(len(swarm)):
         if(swarm[i].countdown>0):
@@ -494,6 +494,9 @@ def update_decay(swarm,R):
             swarm[i].R = R
             #print("Sucessfully changed")
             #print("R:", swarm[i].R)
+        if(swarm[i].countdown == 0 and swarm[i].G != G):
+            swarm[i].detected = False
+            swarm[i].G = G
             
 #Function to update robot positions and metrics per time step
 def update_timestep(swarm,dust_devils,timestep,frequency,min_neighbours,cluster_average,detection_range,R,multiply,set_R,countdown):
@@ -567,8 +570,10 @@ def update_timestep(swarm,dust_devils,timestep,frequency,min_neighbours,cluster_
         #calculating the new position
         x_updated = robot.x+x_change
         y_updated = robot.y+y_change
-
+        
+        """boundaries_crossed = abs(x_updated)>500 or abs(y_updated)>500
         #updating the position
+        if(not boundaries_crossed):"""
         robot.update_position(x_updated,y_updated)
         
         
@@ -687,7 +692,7 @@ def random_walk(swarm):
 
 
 #Function to update/create dust devils
-def dust(dust_devils,probability_dust,side,timer,dust_speed,dust_time,timestep,frequency,seed):
+def dust(dust_devils,probability_dust,side,timer,dust_speed,dust_time,timestep,frequency,random_seed):
     '''
     Adds randomly generated dust devil object to list according to a given probability, pops the dust devils when their time is up and returns the count of the number of new dust devils 
 
@@ -812,8 +817,8 @@ def update_dust(dust_devils):
     y = sym.Symbol('y')
     
     #looping through every dust devil
-    for dust in dust_devils:
-
+    for i in range(len(dust_devils)):
+        dust = dust_devils[i]
         #loading the equations of motion
         x_trajectory = dust.x_trajectory
         y_trajectory = dust.y_trajectory
@@ -823,8 +828,11 @@ def update_dust(dust_devils):
         y_function = lambdify(y, y_trajectory, 'numpy')
         
         #evaluating the equations using the dust devil positions
+        
         x_updated = x_function(dust.x)
         y_updated = y_function(dust.y)
+        if(abs(x_updated)>500 or abs(y_updated)>500):
+            del dust_devils[i]
 
         #updating the dust devil positions
         dust.update_position(x_updated,y_updated)
@@ -858,7 +866,7 @@ def load_positions(path,time):
 #Function to initialise robots based on final positions
 def pre_initialise(X,Y,robot_speed,R):
     '''
-    Loading the swarm positions based on a path and a timestep
+    Loading the swarm positions based on given position, robot speed and desired seperation distance
     
             Parameters:
                    X (numpy array): a numpy array of the preloaded x positions
@@ -888,6 +896,39 @@ def pre_initialise(X,Y,robot_speed,R):
             
         #appending the robot objects
         swarm.append(Robot(x,y,1,0,0,robot_speed, walk_time,heading,identifier,R))
+        
+        #incrementing count, used to ensure there is an equal split of identifies in robots
+        cnt = cnt+1
+        
+    #returning the list of the robot objects
+    return swarm
+
+def pre_initialise_types(X,Y,robot_speed,R, types_array,lattice_constants):
+    '''
+    Loading the swarm positions based on given position, robot speed and desired seperation distance
+    
+            Parameters:
+                   X (numpy array): a numpy array of the preloaded x positions
+                   Y (numpy array): a numpy array of the preloaded y positions
+                   robot_speed (integer): a integer of the robot speed
+            Returns:
+                   swarm (list): a list of the robot objects with the corresponding loaded start positions
+    '''
+    swarm = []
+    
+    #count is used for the identifier of the robot
+    cnt = 0
+    
+    #looping through the positions to initialise the robot swarm
+    for x,y in zip(X,Y):
+        
+        #initialising the random walk time and heading parameters for the robot
+        walk_time = int(np.random.normal(5,3,1))
+        heading = random.uniform(0,2*math.pi)
+        
+            
+        #appending the robot objects
+        swarm.append(Robot(x,y,1,0,0,robot_speed, walk_time,heading,types_array[cnt],R,lattice_constants))
         
         #incrementing count, used to ensure there is an equal split of identifies in robots
         cnt = cnt+1
