@@ -459,11 +459,12 @@ def multiple_graphs(performance_array,timestep,code,x_title,y_title,labels):
     
     return fig
  
-def table_figure(robots,timer,frequency,constants,min_neighbours,cluster_average,total_collisions,total_detection,total_dust):
+def table_figure(robots,timer,frequency,constants,min_neighbours,cluster_average,total_collision,total_detection,total_dust):
     fig = go.Figure(data=[go.Table(header=dict(values=['<b>Simulation Parameters</b>','<b>Values</b>'],
                             line_color='black',
                             font=dict(color='black', size=17)),
-                            cells=dict(values=[[ '<b>Simulation Timestep (h:min:s)</b>','<b>Number of Robots</b>','<b>Timestep Size (s) </b>','<b>Communication Range (m)</b>', '<b>Gravitational Constant</b>','<b>Power</b>','<b>Local Multiplier</b>','<b>Max Force (N)</b>', '<b>Max Speed (m/s)</b>', '<b>Minimum Neighbour Average (m)</b>', '<b>Average Cluster Size</b>','<b>Measurement Events Count </b>', '<b>Number of Dust Devils Detected </b>', '<b>Total Number of Dust Devils</b>'], [str(datetime.timedelta(seconds=timer)),len(robots[0,:,timer*frequency]),round(1/frequency,2),array_check(constants.loc["Communication Range"].values,timer*frequency),array_check(constants.loc["G"].values,timer*frequency),array_check(constants.loc["Power"].values,timer*frequency),array_check(constants.loc["Multiplier"].values,timer*frequency),array_check(constants.loc["Max Force"].values,timer*frequency),array_check(constants.loc["Max Speed"].values,timer*frequency),round(min_neighbours[timer*frequency],2),cluster_average[timer*frequency],total_collisions[timer*frequency],round(total_detection[timer*frequency]),total_dust[timer*frequency]]],align='center',line_color='black'))])
+                            cells=dict(values=[[ '<b>Simulation Timestep (h:min:s)</b>','<b>Number of Robots</b>','<b>Timestep Size (s) </b>','<b>Communication Range (m)</b>', '<b>Gravitational Constant</b>','<b>Power</b>','<b>Local Multiplier</b>','<b>Max Force (N)</b>', '<b>Max Speed (m/s)</b>', '<b>Minimum Neighbour Average (m)</b>', '<b>Average Cluster Size</b>','<b>Measurement Events Count </b>', '<b>Number of Dust Devils Detected </b>', '<b>Total Number of Dust Devils</b>'], [str(datetime.timedelta(seconds=timer)),len(robots[0,:,timer*frequency]),round(1/frequency,2),array_check(constants.loc["Communication Range"].values,timer*frequency),array_check(constants.loc["G"].values,timer*frequency),array_check(constants.loc["Power"].values,timer*frequency),array_check(constants.loc["Multiplier"].values,timer*frequency),array_check(constants.loc["Max Force"].values,timer*frequency),array_check(constants.loc["Max Speed"].values,timer*frequency),round(min_neighbours[timer*frequency],2),cluster_average[timer*frequency],total_collision
+[timer*frequency],round(total_detection[timer*frequency]),total_dust[timer*frequency]]],align='center',line_color='black'))])
     fig.update_layout(width = 650, height = 800,margin=dict(
 t=260, # top margin: 30px, you want to leave around 30 pixels to
               # display the modebar above the graph.
@@ -498,5 +499,14 @@ def combine(graph_path,table_path):
     new1 = Image.new('RGB', (image_graph.width + image_table.width, min(image_graph.height,image_table.height)))
     new1.paste(image_graph, (0, 0))
     new1.paste(image_table, (image_graph.width,((image_graph.height-image_table.height)//2)-50))
+    new1.save(graph_path)
+    os.remove(table_path)
+    
+def combine_tracking(graph_path,table_path):
+    image_graph = Image.open(graph_path)
+    image_table = Image.open(table_path)
+    new1 = Image.new('RGB', (image_graph.width + image_table.width, min(image_graph.height,image_table.height)))
+    new1.paste(image_graph, (0, 0))
+    new1.paste(image_table, (image_graph.width,((image_graph.height-image_table.height)//2)-10))
     new1.save(graph_path)
     os.remove(table_path)

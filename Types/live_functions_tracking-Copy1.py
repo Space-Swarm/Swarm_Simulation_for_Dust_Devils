@@ -471,12 +471,12 @@ def dust_check(dust_devils,robot,detection_range,timestep,set_R,swarm,multiply,R
 
                         #by default setting the detection to true, so it is not repeated in future detection metrics
                         dust_devils[index[0]].detected = True
-                    """robot.R = set_R
+                    robot.R = set_R
                     robot.mass = 1000
                     robot.detected = True
                     robot.countdown = countdown
                     detection_list = detection(swarm)
-                    broadcast(swarm, detection_list, set_R,multiply,R)"""
+                    broadcast(swarm, detection_list, set_R,multiply,R)
                 else:
                     robot.detected = False
 
@@ -687,7 +687,7 @@ def random_walk(swarm):
 
 
 #Function to update/create dust devils
-def dust(dust_devils,probability_dust,side,timer,dust_speed,dust_time,timestep,frequency,seed):
+def dust(dust_devils,probability_dust,side,timer,dust_speed,dust_time,timestep,frequency):
     '''
     Adds randomly generated dust devil object to list according to a given probability, pops the dust devils when their time is up and returns the count of the number of new dust devils 
 
@@ -705,7 +705,7 @@ def dust(dust_devils,probability_dust,side,timer,dust_speed,dust_time,timestep,f
 
 
     '''
-    random.seed(random_seed)
+    
     #initialising count, which is set 0 as default
     count = 0
     
@@ -719,8 +719,8 @@ def dust(dust_devils,probability_dust,side,timer,dust_speed,dust_time,timestep,f
         
         
         #generating a random number within the maximum domain of x and y
-        x = random.randint(-side*500,side*500)
-        y = random.randint(-side*500,side*500)
+        x = random.randint(-side*1000,side*1000)
+        y = random.randint(-side*1000,side*1000)
         
         #generating a dust devil radius
         radius = random.randint(0,500)
