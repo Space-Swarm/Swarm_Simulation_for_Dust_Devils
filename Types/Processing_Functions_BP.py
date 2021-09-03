@@ -111,12 +111,12 @@ def graph_figure(robots,timer,frequency,code):
      xaxis = dict(
          tickmode = 'linear',
          tick0 = 0,
-         dtick = x_max/10
+         dtick = 10
      ),
                        yaxis = dict(
          tickmode = 'linear',
          tick0 = 0,
-         dtick = y_max/10
+         dtick = 10
      )
                      )
     fig.update_xaxes(showline=True, linewidth=2, linecolor='black',mirror=True)
