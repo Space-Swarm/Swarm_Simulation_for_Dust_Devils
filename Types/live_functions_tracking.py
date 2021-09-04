@@ -571,10 +571,10 @@ def update_timestep(swarm,dust_devils,timestep,frequency,min_neighbours,cluster_
         x_updated = robot.x+x_change
         y_updated = robot.y+y_change
         
-        """boundaries_crossed = abs(x_updated)>500 or abs(y_updated)>500
+        boundaries_crossed = abs(x_updated)>500 or abs(y_updated)>500
         #updating the position
-        if(not boundaries_crossed):"""
-        robot.update_position(x_updated,y_updated)
+        if(not boundaries_crossed):
+            robot.update_position(x_updated,y_updated)
         
         
         
@@ -692,7 +692,7 @@ def random_walk(swarm):
 
 
 #Function to update/create dust devils
-def dust(dust_devils,probability_dust,side,timer,dust_speed,dust_time,timestep,frequency,random_seed):
+def dust(dust_devils,probability_dust,side,timer,dust_speed,dust_time,timestep,frequency):
     '''
     Adds randomly generated dust devil object to list according to a given probability, pops the dust devils when their time is up and returns the count of the number of new dust devils 
 
@@ -710,7 +710,7 @@ def dust(dust_devils,probability_dust,side,timer,dust_speed,dust_time,timestep,f
 
 
     '''
-    random.seed(random_seed)
+   
     #initialising count, which is set 0 as default
     count = 0
     
