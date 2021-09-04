@@ -800,8 +800,35 @@ def trajectory_dust(dust_speed,timestep):
     #returning the trajectory equations
     return x_trajectory,y_trajectory
 
+#function to return new dust devil positon based on trajectory equation
+def return_updated_dust_position(dust):
+    #initialising symbolic math for use in the expressions
+    x = sym.Symbol('x')
+    y = sym.Symbol('y')
+    
+    #loading the equations of motion
+    x_trajectory = dust.x_trajectory
+    y_trajectory = dust.y_trajectory
+
+    #generating corresponding function expressions for the equations
+    x_function = lambdify(x, x_trajectory, 'numpy')
+    y_function = lambdify(y, y_trajectory, 'numpy')
+
+    #evaluating the equations using the dust devil positions
+
+    x_updated = x_function(dust.x)
+    y_updated = y_function(dust.y)
+    return [x_updated,y_updated]
+
+#function to check if within boundary
+def boundary_check_dust(values,bound):
+    if(abs(values[0])>bound or abs(values[1])>bound):
+        return False
+    else:
+        return True
+
 #function to update dust devil positions based on trajectory 
-def update_dust(dust_devils):
+def update_dust(dust_devils,bound):
     '''
     Updates the positions of the dust devil based on the equation of motion
     
@@ -812,29 +839,13 @@ def update_dust(dust_devils):
             Returns:
                    None
     '''
-    #initialising symbolic math for use in the expressions
-    x = sym.Symbol('x')
-    y = sym.Symbol('y')
-    
-    #looping through every dust devil
-    for i in range(len(dust_devils)):
-        dust = dust_devils[i]
-        #loading the equations of motion
-        x_trajectory = dust.x_trajectory
-        y_trajectory = dust.y_trajectory
-        
-        #generating corresponding function expressions for the equations
-        x_function = lambdify(x, x_trajectory, 'numpy')
-        y_function = lambdify(y, y_trajectory, 'numpy')
-        
-        #evaluating the equations using the dust devil positions
-        
-        x_updated = x_function(dust.x)
-        y_updated = y_function(dust.y)
-        if(abs(x_updated)>500 or abs(y_updated)>500):
-            del dust_devils[i]
 
-        #updating the dust devil positions
+
+    #if(len(dust_devils)>0):
+    #removing dust devils outside of boundaries through conditional list comprehension, and replacing it exactly, since it is referenced elsewhere
+    dust_devils[:] = [dust for dust in dust_devils if(boundary_check_dust(return_updated_dust_position(dust),bound))]
+    for dust in dust_devils:
+        x_updated,y_updated = return_updated_dust_position(dust)
         dust.update_position(x_updated,y_updated)
 
 
