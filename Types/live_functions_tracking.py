@@ -694,7 +694,7 @@ def random_walk(swarm):
 
 
 #Function to update/create dust devils
-def dust(dust_devils,probability_dust,side,timer,dust_speed,dust_time,timestep,frequency):
+def dust(dust_devils,probability_dust,side,timer,dust_speed,dust_time,timestep,frequency,bound):
     
     '''
     Adds randomly generated dust devil object to list according to a given probability, pops the dust devils when their time is up and returns the count of the number of new dust devils 
@@ -727,15 +727,15 @@ def dust(dust_devils,probability_dust,side,timer,dust_speed,dust_time,timestep,f
         
         
         #generating a random number within the maximum domain of x and y
-        x = random.randint(-side*500,side*500)
-        y = random.randint(-side*500,side*500)
+        x = random.randint(-side*bound,side*bound)
+        y = random.randint(-side*bound,side*bound)
         
         #generating a dust devil radius
-        radius = random.randint(0,500)
+        #radius = random.randint(0,500)
         x_trajectory,y_trajectory = trajectory_dust(dust_speed,timestep)
         
         #adding to the dust devils list
-        dust_devils.append(DustDevil(x,y,radius,dust_speed,timer,dust_time*frequency,x_trajectory,y_trajectory))
+        dust_devils.append(DustDevil(x,y,dust_speed,timer,dust_time*frequency,x_trajectory,y_trajectory))
         
         #setting the count as 1, since 1 dust devil has been created
         count = 1

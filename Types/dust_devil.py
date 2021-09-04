@@ -36,7 +36,7 @@ end_time : float
              
         
      """
-    def __init__(self, x_position, y_position, radius, speed,timestep,survival_time,x_trajectory,y_trajectory):
+    def __init__(self, x_position, y_position, speed,timestep,survival_time,x_trajectory,y_trajectory):
         """
         Initialises the dust devil object and its attributes
 
@@ -61,7 +61,7 @@ y_trajectory : sym math
          """
         self.x = x_position
         self.y = y_position
-        self.radius = radius
+        #self.radius = radius
         self.speed = speed
         self.start = timestep
         self.end_time = timestep+survival_time

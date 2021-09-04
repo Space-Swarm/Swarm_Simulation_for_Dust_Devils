@@ -364,7 +364,7 @@ def performance_graph(fitness,x_values,frequency,code,x_title,y_title):
     if(code == ""):
         code = ""
     else:
-        code = " with " + code
+        code = " with" + code
     
     #creating scatter plot of robots
     data = go.Scatter(
