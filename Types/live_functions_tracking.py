@@ -33,9 +33,6 @@ import os
 import math
 import sys
 
-import Processing_Functions_BP
-
-
 import dash
 from dash.dependencies import Output, Input
 import dash_core_components as dcc
@@ -721,9 +718,9 @@ def dust(dust_devils,probability_dust,side,timer,dust_speed,dust_time,timestep,f
     generated = random.uniform(0,1)
     amount = len(dust_devils)
     
-    if(timer == 0):
+    #if(timer == 0):
     #checking if a dust devil should be generated according to the random float generated
-    #if(generated<probability_dust):
+    if(generated<probability_dust):
         
         
         #generating a random number within the maximum domain of x and y
