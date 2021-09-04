@@ -424,6 +424,7 @@ def physics_walk(swarm,G,power,R,max_force,multiply,timestep):
         robot.update_velocity(velocity_x,velocity_y)    
 
 #Function to return current dust devil performance metrics
+
 def dust_check(dust_devils,robot,detection_range,timestep,set_R,swarm,multiply,R,countdown):    
     '''
     Checks if any of the robots detects a dust devil within range and increments the resulting performance metrics if so
@@ -499,7 +500,8 @@ def update_decay(swarm,R,G):
             swarm[i].G = G
             
 #Function to update robot positions and metrics per time step
-def update_timestep(swarm,dust_devils,timestep,frequency,min_neighbours,cluster_average,detection_range,R,multiply,set_R,countdown):
+def update_timestep(swarm,dust_devils,timestep,frequency,min_neighbours,cluster_average,detection_range,R,multiply,set_R,countdown,bound):
+    
     '''
     Updating the dynamics of the simulation (robot positions, dust devil detections etc) per timestep
             Parameters:
@@ -571,7 +573,7 @@ def update_timestep(swarm,dust_devils,timestep,frequency,min_neighbours,cluster_
         x_updated = robot.x+x_change
         y_updated = robot.y+y_change
         
-        boundaries_crossed = abs(x_updated)>500 or abs(y_updated)>500
+        boundaries_crossed = abs(x_updated)>bound or abs(y_updated)>bound
         #updating the position
         if(not boundaries_crossed):
             robot.update_position(x_updated,y_updated)
@@ -693,6 +695,7 @@ def random_walk(swarm):
 
 #Function to update/create dust devils
 def dust(dust_devils,probability_dust,side,timer,dust_speed,dust_time,timestep,frequency):
+    
     '''
     Adds randomly generated dust devil object to list according to a given probability, pops the dust devils when their time is up and returns the count of the number of new dust devils 
 

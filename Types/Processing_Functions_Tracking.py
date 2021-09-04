@@ -568,6 +568,6 @@ def combine_tracking(graph_path,table_path):
     image_table = Image.open(table_path)
     new1 = Image.new('RGB', (image_graph.width + image_table.width, min(image_graph.height,image_table.height)))
     new1.paste(image_graph, (0, 0))
-    new1.paste(image_table, (image_graph.width,((image_graph.height-image_table.height)//2)-10))
+    new1.paste(image_table, (image_graph.width,((image_graph.height-image_table.height)//2)-110))
     new1.save(graph_path)
     os.remove(table_path)
