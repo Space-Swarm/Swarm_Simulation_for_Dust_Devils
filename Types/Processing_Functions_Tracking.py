@@ -29,6 +29,36 @@ import math
 from ast import literal_eval
 from PIL import Image
 
+def maximum_tick(maximum,magnitude):
+    maagnitude = int(magnitude)
+    if(maximum<=10):
+        tick_spacing = 1
+    if(10<maximum<=100 and magnite == 1):
+        tick_spacing = 5
+    if(100<maximum<=200 and magnitude == 2):
+        tick_spacing = 10
+    if(200<maximum<=1000 and magnitude == 2):
+        tick_spacing = 50
+    if(10000<maximum<=2000 and magnitude == 3):
+        tick_spacing = 100
+    if(2000<maximum<=10000 and magnitude == 3):
+        tick_spacing = 500
+    if(10000<maximum<=20000 and magnitude == 4):
+        tick_spacing = 1000
+    if(20000<maximum<=50000 and magnitude == 4):
+        tick_spacing = 2500
+    if(50000<maximum<=100000 and magnitude == 4):
+        tick_spacing = 5000
+    if(100000<maximum<=200000 and magnitude == 5):
+        tick_spacing = 10000
+    if(200000<maximum<=500000 and magnitude == 5):
+        tick_spacing = 50000
+    if(maximum>500000):
+        tick_spacing = 50000
+    return tick_spacing   
+       
+        
+
 #Function to check if any of the items contain an array
 def array_check(item,timer):
     '''
@@ -133,14 +163,17 @@ def graph_figure(robots,timer,frequency,code):
     return fig
 
         
-def graph_figure_fitness(x_fitness,y_fitness,x_title,y_title,code,rounding_x,rounding_y,tick):
+def graph_figure_fitness(x_fitness,y_fitness,x_title,y_title,code,rounding_x,rounding_y):
     #initialising global variables
     
     x_round = (math.ceil(max(x_fitness)/rounding_x))*rounding_x
-    y_round = (math.ceil(max(y_fitness)/rounding_y))*rounding_y
+    y_round = (math.ceil(max(y_fitness+y_error[0])/rounding_y))*rounding_y
 
-
-
+    x_mag =  round(math.log((x_round),10),0)
+    y_mag =  round(math.log((y_round),10),0)
+    
+    x_tick = maximum_tick(x_round,x_mag)
+    y_tick = maximum_tick(x_round,x_mag)
    
     #creating scatter plot of robots
     data = go.Scatter(
@@ -173,12 +206,12 @@ def graph_figure_fitness(x_fitness,y_fitness,x_title,y_title,code,rounding_x,rou
      xaxis = dict(
          tickmode = 'linear',
          tick0 = 0,
-         dtick = x_round/tick, ticks="outside"
+         dtick = x_tick, ticks="outside"
      ),
                        yaxis = dict(
          tickmode = 'linear',
          tick0 = 0,
-         dtick = y_round/tick, ticks="outside"
+         dtick = y_tick, ticks="outside"
      ),
                     plot_bgcolor= 'rgba(0,0,0,0)',
                      )
@@ -188,16 +221,19 @@ def graph_figure_fitness(x_fitness,y_fitness,x_title,y_title,code,rounding_x,rou
     return fig
 
         
-def graph_figure_fitness_error(x_fitness,y_fitness,x_error,y_error,x_title,y_title,code,rounding_x,rounding_y,tick):
+def graph_figure_fitness_error(x_fitness,y_fitness,y_error,x_title,y_title,code,rounding_x,rounding_y,y_tick):
     #initialising global variables
     
 
      
     x_round = (math.ceil(max(x_fitness)/rounding_x))*rounding_x
-    y_round = (math.ceil(max(y_fitness)/rounding_y))*rounding_y
+    y_round = (math.ceil(max(y_fitness+y_error[0])/rounding_y))*rounding_y
 
-
-   
+    x_mag =  round(math.log((x_round),10),0)
+    y_mag =  round(math.log((y_round),10),0)
+     
+    
+    print(y_tick)
     #creating scatter plot of robots
     data = go.Scatter(
         x=x_fitness,
@@ -211,7 +247,7 @@ def graph_figure_fitness_error(x_fitness,y_fitness,x_error,y_error,x_title,y_tit
     
     #creating the plotly figure with the robot data
     fig = go.Figure(
-        { "data": data , "layout": go.Layout(yaxis=dict(range=[0, y_round]),xaxis = dict(range=[0,x_round]))
+        { "data": data , "layout": go.Layout(yaxis=dict(range=[0, y_round]),xaxis = dict(range=[0,x_round+6]))
         }
     )
 
@@ -231,17 +267,19 @@ def graph_figure_fitness_error(x_fitness,y_fitness,x_error,y_error,x_title,y_tit
 
 #     height=900,width=1150,
      xaxis = dict(
-         tickmode = 'linear',
-         tick0 = 0,
-         dtick = x_round/tick, ticks="outside"
+         #tickmode = 'linear',
+         #dtick = y_tick, ticks="outside",
+                           tickvals = list(range(0,105,5))
      ),
                        yaxis = dict(
          tickmode = 'linear',
          tick0 = 0,
-         dtick = y_round/tick, ticks="outside"
+         dtick = y_tick, ticks="outside"
+                           
      ),
       plot_bgcolor='rgba(0,0,0,0)',
                      )
+    print(list(range(0,105,5)))
     fig.update_xaxes(showgrid=False,showline=True,linecolor='black',linewidth=1)
     fig.update_yaxes(showgrid=False,showline=True,linecolor='black',linewidth=1)
     
