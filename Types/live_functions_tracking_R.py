@@ -191,6 +191,7 @@ def broadcast(swarm, detection_list, set_R, multiply, R):
         #looping through the current robots neighbourhood
         for j in list_neighbours:
             swarm[j].R = set_R
+            #swarm[j].G = 1000
     
 
 #Function to check if the robot has gone over the edge and changing the value to negative if it has
@@ -420,8 +421,123 @@ def physics_walk(swarm,G,power,R,max_force,multiply,timestep):
         #updating the robots velocity
         robot.update_velocity(velocity_x,velocity_y)    
 
-#Function to return current dust devil performance metrics
+def physics_walk_robot(robot,x,y,max_force,max_force_overall,multiply,R_normal,timestep):        
+    x_copy,y_copy = x.copy(),y.copy()
 
+
+    #initialising the forces as 0
+    force = np.array([0,0])
+
+    #finding the distance between the current robot and the other robots
+    x_dist_unsorted = np.array(x_copy)-robot.x
+    y_dist_unsorted = np.array(y_copy)-robot.y
+
+    #calculating the distance from the robots to the current robot
+    distance = np.sqrt(np.square(x_dist_unsorted)+np.square(y_dist_unsorted))
+
+    #determining the robots within 1.5R distance
+    distance_local = np.nonzero(distance) and (distance<multiply*R_normal)
+
+
+    #creating the x and y distance matrices for robots within the local 1.5R distance
+    x_dist = x_dist_unsorted[distance_local]
+    y_dist = y_dist_unsorted[distance_local]
+    position = np.array([x_dist,y_dist])
+
+    #initialising force changes
+    force_change_dir = 0
+
+    #number of robots within the neighbourhood
+    robot_number = len(distance_local)
+
+
+    #looping through the current robots neighbourhood
+    for j in range(len(x_dist)):
+
+        #storing current position 
+        current_position = np.array([position[0,j],position[1,j]])
+
+
+        #calculating magnitude of positions
+        mag = magnitude(current_position[0],current_position[1])
+
+
+        #calculating the force
+        numerator = (robot.G*(robot.mass**2))
+        denominator = mag**2
+
+
+        #calling function to account for division by zero, if there is a zero denominator, then the force component with zero is returned as zero
+        force_change = division_check(numerator,denominator)
+
+        #calculating the unit vector of the position
+        distance_unit = unit(current_position)
+
+        #if the magnitude is bigger than R, then a force is added to draw the robots together             
+        if(mag>robot.R):
+            force_change_dir = distance_unit
+
+        #if the magnitude is smaller than R, then a force is added to push the robots apart 
+        elif(mag<robot.R):
+            force_change_dir = -distance_unit
+        else:
+            force_change_dir = np.array([0,0])
+
+        #calculating new force change based on direction and magnitude
+        force_delta = force_change_dir*force_change
+
+        #constraining force to the maximum
+        if((force_delta[0]**2+force_delta[1]**2)>((max_force)**2)):
+            #calculating unit vector of the force
+            unit_force = unit([force_delta[0],force_delta[1]])
+
+            #multiplying it by the maximum force
+            updating_force = unit_force*max_force
+
+            #setting the new force equal to the respective updated maximum force components
+            force_delta[0] = updating_force[0]
+            force_delta[1] = updating_force[1]
+
+        #calculating new force
+        force = force+force_delta
+    #setting force maximum for sum of force contributions
+    if((force[0]**2+force[1]**2)>((max_force_overall)**2)):
+            #calculating unit vector of the force
+            unit_force = unit([force[0],force[1]])
+
+            #multiplying it by the maximum force
+            updating_force = unit_force*max_force
+
+            #setting the new force equal to the respective updated maximum force components
+            force[0] = updating_force[0]
+            force[1] = updating_force[1]
+
+    #calculating the change in velocity
+    delta_vx = (force[0])*timestep/robot.mass
+    delta_vy = (force[1])*timestep/robot.mass
+
+    #calculating the new velocity
+    velocity_x = robot.x_velocity + delta_vx
+    velocity_y = robot.y_velocity + delta_vy
+
+   #keeping the velocity within the maximum velocity of the robot
+    if((velocity_x**2+velocity_y**2)>((robot.max_velocity)**2)):
+        #calculating unit vector of the velocity
+        unit_velocity = unit([velocity_x,velocity_y])
+
+        #multiplying it by the maximum velocity
+        velocity = unit_velocity*robot.max_velocity
+
+        #setting the new velocity equal to the respective updated maximum velocity components
+        velocity_x = velocity[0]
+        velocity_y = velocity[1]
+
+    #updating the robots velocity
+    robot.update_velocity(velocity_x,velocity_y)    
+
+    
+    
+#Function to return current dust devil performance metrics
 def dust_check(dust_devils,robot,detection_range,timestep,set_R,swarm,multiply,R,countdown):    
     '''
     Checks if any of the robots detects a dust devil within range and increments the resulting performance metrics if so
@@ -444,6 +560,7 @@ def dust_check(dust_devils,robot,detection_range,timestep,set_R,swarm,multiply,R
     
     #checking if dust devils have been generated yet
     if(len(x_dust)>0):
+        
                 #finding distance between the robot and the dust devils 
                 x_dust_dist = np.array(x_dust.copy()) - robot.x
                 y_dust_dist = np.array(y_dust.copy()) - robot.y
@@ -457,6 +574,7 @@ def dust_check(dust_devils,robot,detection_range,timestep,set_R,swarm,multiply,R
 
                 #checking if the array of the dust devils detected is above zero
                 if(indices_detected[0].size>0):
+                    print("Detected!!! Do something")
                     #looping through each index of dust devils detected
                     for index in (indices_detected):
                         
@@ -469,12 +587,14 @@ def dust_check(dust_devils,robot,detection_range,timestep,set_R,swarm,multiply,R
 
                         #by default setting the detection to true, so it is not repeated in future detection metrics
                         dust_devils[index[0]].detected = True
-                    """robot.R = set_R
-                    robot.mass = 1000
+                    robot.R = set_R
+                    print(robot.R)
+                    robot.G = 10000000
+                    
                     robot.detected = True
                     robot.countdown = countdown
                     detection_list = detection(swarm)
-                    broadcast(swarm, detection_list, set_R,multiply,R)"""
+                    broadcast(swarm, detection_list, set_R,multiply,R)
                 else:
                     robot.detected = False
 

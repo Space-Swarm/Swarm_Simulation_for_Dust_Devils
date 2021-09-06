@@ -131,6 +131,124 @@ def graph_figure(robots,timer,frequency,code):
     fig.update_yaxes(showline=True, linewidth=2, linecolor='black',mirror=True)
     
     return fig
+
+        
+def graph_figure_fitness(x_fitness,y_fitness,x_title,y_title,code,rounding_x,rounding_y,tick):
+    #initialising global variables
+    
+    x_round = (math.ceil(max(x_fitness)/rounding_x))*rounding_x
+    y_round = (math.ceil(max(y_fitness)/rounding_y))*rounding_y
+
+
+
+   
+    #creating scatter plot of robots
+    data = go.Scatter(
+        x=x_fitness,
+        y=y_fitness,
+        mode = 'lines',
+    )
+    
+    #creating the plotly figure with the robot data
+    fig = go.Figure(
+        { "data": data , "layout": go.Layout(yaxis=dict(range=[0, y_round]),xaxis = dict(range=[0,x_round]))
+        }
+    )
+
+
+    #updating layout with circles and different formatting'''
+    fig.update_layout(title="<b>" + y_title + " versus " + x_title + ""+ code + "</b>",
+    title_x=0.5,
+    xaxis_title=x_title,
+    yaxis_title=y_title,
+    margin=dict(
+        t=50, # top margin: 30px, you want to leave around 30 pixels to
+              # display the modebar above the graph.
+         # bottom margin: 10px
+        l=10, # left margin: 10px
+        r=10, # right margin: 10px
+    ),
+
+#     height=900,width=1150,
+     xaxis = dict(
+         tickmode = 'linear',
+         tick0 = 0,
+         dtick = x_round/tick, ticks="outside"
+     ),
+                       yaxis = dict(
+         tickmode = 'linear',
+         tick0 = 0,
+         dtick = y_round/tick, ticks="outside"
+     ),
+                    plot_bgcolor= 'rgba(0,0,0,0)',
+                     )
+    fig.update_xaxes(showgrid=False,showline=True,linecolor='black')
+    fig.update_yaxes(showgrid=False,showline=True,linecolor='black')
+    
+    return fig
+
+        
+def graph_figure_fitness_error(x_fitness,y_fitness,x_error,y_error,x_title,y_title,code,rounding_x,rounding_y,tick):
+    #initialising global variables
+    
+
+     
+    x_round = (math.ceil(max(x_fitness)/rounding_x))*rounding_x
+    y_round = (math.ceil(max(y_fitness)/rounding_y))*rounding_y
+
+
+   
+    #creating scatter plot of robots
+    data = go.Scatter(
+        x=x_fitness,
+        y=y_fitness,
+        error_y=dict(
+            type='data', # value of error bar given in data coordinates
+            array=y_error,
+            visible=True),
+        mode = 'lines+markers',
+    )
+    
+    #creating the plotly figure with the robot data
+    fig = go.Figure(
+        { "data": data , "layout": go.Layout(yaxis=dict(range=[0, y_round]),xaxis = dict(range=[0,x_round]))
+        }
+    )
+
+
+    #updating layout with circles and different formatting'''
+    fig.update_layout(title="<b>" + y_title + " versus " + x_title + ""+ code + "</b>",
+    title_x=0.5,
+    xaxis_title=x_title,
+    yaxis_title=y_title,
+    margin=dict(
+        t=50, # top margin: 30px, you want to leave around 30 pixels to
+              # display the modebar above the graph.
+         # bottom margin: 10px
+        l=10, # left margin: 10px
+        r=10, # right margin: 10px
+    ),
+
+#     height=900,width=1150,
+     xaxis = dict(
+         tickmode = 'linear',
+         tick0 = 0,
+         dtick = x_round/tick, ticks="outside"
+     ),
+                       yaxis = dict(
+         tickmode = 'linear',
+         tick0 = 0,
+         dtick = y_round/tick, ticks="outside"
+     ),
+      plot_bgcolor='rgba(0,0,0,0)',
+                     )
+    fig.update_xaxes(showgrid=False,showline=True,linecolor='black',linewidth=1)
+    fig.update_yaxes(showgrid=False,showline=True,linecolor='black',linewidth=1)
+    
+    
+    return fig
+
+
 def graph_types(x_0,y_0,x_1,y_1,maximum,length,title,annotation):
     x_overall = np.concatenate((x_0, x_1), axis=None)
     y_overall = np.concatenate((y_0,y_1),axis = None)
@@ -542,6 +660,22 @@ def table_figure_area(robots,timer,frequency,constants,min_neighbours,cluster_av
                             line_color='black',
                             font=dict(color='black', size=17)),
                             cells=dict(values=[[ '<b>Simulation Timestep (h:min:s)</b>','<b>Number of Robots</b>','<b>Timestep Size (s) </b>','<b>Communication Range (m)</b>', '<b>Gravitational Constant</b>','<b>Power</b>','<b>Max Force (N)</b>', '<b>Max Speed (m/s)</b>', '<b>Minimum Neighbour Average (m)</b>', '<b>Average Cluster Size</b>'], [str(datetime.timedelta(seconds=timer)),len(robots[0,:,timer*frequency]),round(1/frequency,2),array_check(constants.loc["Communication Range"].values,timer*frequency),array_check(constants.loc["G"].values,timer*frequency),array_check(constants.loc["Power"].values,timer*frequency),array_check(constants.loc["Max Force"].values,timer*frequency),array_check(constants.loc["Max Speed"].values,timer*frequency),round(min_neighbours[timer*frequency],2),cluster_average[timer*frequency]]],align='center',line_color='black'))])
+    fig.update_layout(width = 650, height = 800,margin=dict(
+t=260, # top margin: 30px, you want to leave around 30 pixels to
+              # display the modebar above the graph.
+        b=10, # bottom margin: 10px
+        l=10, # left margin: 10px
+        r=10,
+    ))
+    fig.update_yaxes(showline=True, linewidth=2, linecolor='black', mirror=True)
+    fig.update_xaxes(showline=True, linewidth=2, linecolor='black', mirror=True)
+    return fig
+
+def table_figure_dash(timer,robot_number,R,G,power,max_force,max_speed,min_neighbours,cluster_average):
+    fig = go.Figure(data=[go.Table(header=dict(values=['<b>Simulation Parameters</b>','<b>Values</b>'],
+                            line_color='black',
+                            font=dict(color='black', size=17)),
+                            cells=dict(values=[[ '<b>Simulation Timestep (h:min:s)</b>','<b>Number of Robots</b>','<b>Communication Range (m)</b>', '<b>Gravitational Constant</b>','<b>Power</b>','<b>Max Force (N)</b>', '<b>Max Speed (m/s)</b>', '<b>Minimum Neighbour Average (m)</b>', '<b>Average Cluster Size</b>'], [str(datetime.timedelta(seconds=timer)),robot_number,R,G,power,max_force,max_speed,min_neighbours,cluster_average]],align='center',line_color='black'))])
     fig.update_layout(width = 650, height = 800,margin=dict(
 t=260, # top margin: 30px, you want to leave around 30 pixels to
               # display the modebar above the graph.
