@@ -229,7 +229,69 @@ def graph_figure_fitness(x_fitness,y_fitness,x_title,y_title,code,tick):
     fig.update_yaxes(showgrid=False,showline=True,linecolor='black')
     
     return fig
+def graph_figure_fitness_max(x_fitness,y_fitness,x_title,y_title,code,tick,maximum,name):
+    #initialising global variables
+    print("X Fitness: ",max(x_fitness))
+    print("Y Fitness: ",max(y_fitness))
+    x_mag =  math.floor(math.log10(max(x_fitness)))
+    y_mag =  math.floor(math.log10(max(y_fitness)))
 
+    rounding_x = (10**x_mag)
+    
+    
+    rounding_y = (10**y_mag)
+
+    
+    x_round = (math.ceil(max(x_fitness)/rounding_x))*rounding_x
+    y_round = (math.ceil(max(y_fitness)/rounding_y))*rounding_y
+
+
+   
+    #creating scatter plot of robots
+    data = go.Scatter(
+        x=x_fitness,
+        y=y_fitness,
+        mode = 'lines',
+        name = name
+    )
+    
+    #creating the plotly figure with the robot data
+    fig = go.Figure(
+        { "data": data , "layout": go.Layout(yaxis=dict(range=[0, maximum]),xaxis = dict(range=[0,x_round])), 
+        }
+    )
+
+
+    #updating layout with circles and different formatting'''
+    fig.update_layout(title="<b>" + y_title + " versus " + x_title + ""+ code + "</b>",
+    title_x=0.5,
+    xaxis_title=x_title,
+    yaxis_title=y_title,
+    margin=dict(
+        t=50, # top margin: 30px, you want to leave around 30 pixels to
+              # display the modebar above the graph.
+         # bottom margin: 10px
+        l=10, # left margin: 10px
+        r=10, # right margin: 10px
+    ),
+
+#     height=900,width=1150,
+     xaxis = dict(
+         tickmode = 'linear',
+         tick0 = 0,
+         dtick = x_round/tick, ticks="outside"
+     ),
+                       yaxis = dict(
+         tickmode = 'linear',
+         tick0 = 0,
+         dtick = maximum/tick, ticks="outside"
+     ),
+                    plot_bgcolor= 'rgba(0,0,0,0)',
+                     )
+    fig.update_xaxes(showgrid=False,showline=True,linecolor='black')
+    fig.update_yaxes(showgrid=False,showline=True,linecolor='black')
+    
+    return fig
         
 def graph_figure_fitness_error(x_fitness,y_fitness,y_error,x_title,y_title,code,y_tick,name_set):
     #initialising global variables
@@ -248,9 +310,7 @@ def graph_figure_fitness_error(x_fitness,y_fitness,y_error,x_title,y_title,code,
 
     
      
-    print("Y Round: ",y_round)
-    print("Y Mag",y_mag)
-    print("Y Tick: ",y_tick)
+
     #creating scatter plot of robots
     data = go.Scatter(
         x=x_fitness,
@@ -259,7 +319,7 @@ def graph_figure_fitness_error(x_fitness,y_fitness,y_error,x_title,y_title,code,
             type='data', # value of error bar given in data coordinates
             array=y_error,
             visible=True),
-        mode = 'lines+markers',
+        mode = 'markers',
         name = name_set,
     )
     
@@ -303,6 +363,128 @@ def graph_figure_fitness_error(x_fitness,y_fitness,y_error,x_title,y_title,code,
     
     
     return fig
+
+def graph_figure_fitness_error_max(x_fitness,y_fitness,y_error,x_title,y_title,code,y_tick,name_set,maximum):
+    #initialising global variables
+    
+
+    x_mag =  round(math.log(max(x_fitness),10),0)
+
+    y_mag =  round(math.log(max(y_fitness),10),0)
+    
+    rounding_x = 10**x_mag
+    rounding_y = 10**y_mag
+    x_round = (math.ceil(max(x_fitness)/rounding_x))*rounding_x
+
+    
+    y_round = ((math.ceil(max(y_fitness)+abs(max(y_error))))/rounding_y)*rounding_y
+
+    
+     
+
+    #creating scatter plot of robots
+    
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(marker_symbol = "x-thin",
+        x=x_fitness,
+        y=y_fitness,
+        error_y=dict(
+            type='data', # value of error bar given in data coordinates
+            array=y_error,
+            visible=True),
+        mode = 'markers',
+         marker=dict(size = 8,
+             color = "blue",
+                              line=dict(width=2,
+                                        color = "Blue")),
+        name = name_set,
+    ))
+        
+    fig.add_trace(go.Scatter(
+        name='Upper Bound',
+        x=x_fitness,
+        y=list(np.array(y_fitness)+np.array(y_error)),
+        marker=dict(color="#444"),
+        line=dict(width=0),
+        mode='lines',
+        fillcolor="rgba(0,0,255,0.4)",
+        fill='tonexty',
+        showlegend=False,
+        opacity = 0.5
+    ))
+    fig.add_trace(go.Scatter(
+        name='Lower Bound',
+        x=x_fitness,
+        y=list(np.array(y_fitness)-np.array(y_error)),
+        marker=dict(color="#444"),
+        line=dict(width=0),
+        mode='lines',
+        fillcolor="rgba(0,0,255,0.3)",
+        fill='tonexty',
+        showlegend=False,
+        opacity = 0.5
+    ))
+    
+   
+    #creating the plotly figure with the robot data
+    """fig = go.Figure(
+        { "data": data , "layout": go.Layout(yaxis=dict(range=[0, maximum]),xaxis = dict(range=[0,x_round+5]))
+        }
+    )"""
+
+    fig.add_trace(go.Scatter(marker_symbol = "x-thin",
+        x=x_fitness,
+        y=y_fitness,
+        error_y=dict(
+            type='data', # value of error bar given in data coordinates
+            array=y_error,
+            visible=True),
+        mode = 'markers',
+         marker=dict(size = 8,
+             color = "blue",
+                              line=dict(width=2,
+                                        color = "Blue")),
+                             showlegend = False
+     
+    ))
+
+    #updating layout with circles and different formatting'''
+    fig.update_layout(title="<b>" + y_title + " versus " + x_title + ""+ code + "</b>",
+    
+    title_x=0.5,
+    xaxis_title=x_title,
+    yaxis_title=y_title,
+    margin=dict(
+        t=50, # top margin: 30px, you want to leave around 30 pixels to
+              # display the modebar above the graph.
+         # bottom margin: 10px
+        l=10, # left margin: 10px
+        r=10, # right margin: 10px
+    ),
+
+#     height=900,width=1150,
+     xaxis = dict(range=[0,x_round+5],
+         #tickmode = 'linear',
+         ticks="outside",
+                           tickvals = list(range(0,110,10))
+     ),
+                       yaxis = dict(range=[0, maximum],
+         tickmode = 'linear',
+         tick0 = 0,
+         dtick = y_tick,
+         ticks="outside"
+                           
+     ),
+      plot_bgcolor='rgba(0,0,0,0)',
+                     )
+     
+    fig.update_xaxes(showgrid=False,showline=True,linecolor='black',linewidth=1)
+    fig.update_yaxes(showgrid=False,showline=True,linecolor='black',linewidth=1)
+   
+    
+    
+    return fig
+
 
 
 def graph_types(x_0,y_0,x_1,y_1,maximum,length,title,annotation):
@@ -356,12 +538,12 @@ def graph_types(x_0,y_0,x_1,y_1,maximum,length,title,annotation):
     fig.update_traces(opacity=0.4, selector=dict(type='histogram2d'))
     fig.update_layout(
     #     height=900,width=1150,
-         xaxis = dict(range=[-maximum, maximum],
+         xaxis = dict(#range=[-maximum, maximum],
              tickmode = 'linear',
              tick0 = 0,
              dtick = maximum/(length*0.5)
          ),
-                           yaxis = dict(range=[-maximum, maximum],
+                           yaxis = dict(#range=[-maximum, maximum],
              tickmode = 'linear',
              tick0 = 0,
              dtick = maximum/(length*0.5)
