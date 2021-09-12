@@ -1,4 +1,4 @@
-#Simulating a Swarm for a Space Mission Proposal - Using a Swarm to detect lightning in Dust Devils on Mars
+# Simulating a Swarm for a Space Mission Proposal - Using a Swarm to detect lightning in Dust Devils on Mars
 
 There are the following tools available:
 
