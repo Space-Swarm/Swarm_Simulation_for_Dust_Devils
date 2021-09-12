@@ -292,6 +292,80 @@ def graph_figure_fitness_max(x_fitness,y_fitness,x_title,y_title,code,tick,maxim
     fig.update_yaxes(showgrid=False,showline=True,linecolor='black')
     
     return fig
+
+def graph_figure_fitness_max_report(x_fitness,y_fitness,x_title,y_title,code,tick,maximum,name):
+    #initialising global variables
+    print("X Fitness: ",max(x_fitness))
+    print("Y Fitness: ",max(y_fitness))
+    x_mag =  math.floor(math.log10(max(x_fitness)))
+    y_mag =  math.floor(math.log10(max(y_fitness)))
+
+    rounding_x = (10**x_mag)
+   
+    rounding_y = (10**y_mag)
+
+    
+    x_round = (math.ceil(max(x_fitness)/rounding_x))*rounding_x
+    y_round = (math.ceil(max(y_fitness)/rounding_y))*rounding_y
+
+
+   
+    #creating scatter plot of robots
+    data = go.Scatter(
+        x=x_fitness,
+        y=y_fitness,
+        mode = 'lines+markers',
+        name = name,
+        line=dict(width=4,
+                              dash='dash'),
+         marker=dict(
+            symbol='circle',
+            opacity=1,
+            size=8,
+            line=dict(
+                color='black',
+                width=1
+            ))
+        )
+
+    
+    #creating the plotly figure with the robot data
+    fig = go.Figure(
+        { "data": data , "layout": go.Layout(yaxis=dict(range=[0, maximum+5]),xaxis = dict(range=[0,x_round+5])), 
+        }
+    )
+
+
+    #updating layout with circles and different formatting'''
+    fig.update_layout(title="<b>" + y_title + " versus " + x_title + ""+ code + "</b>",
+    title_x=0.5,
+    xaxis_title=x_title,
+    yaxis_title=y_title,
+    margin=dict(
+        t=50, # top margin: 30px, you want to leave around 30 pixels to
+              # display the modebar above the graph.
+         # bottom margin: 10px
+        l=10, # left margin: 10px
+        r=10, # right margin: 10px
+    ),
+
+#     height=900,width=1150,
+     xaxis = dict(
+         tickmode = 'linear',
+         tick0 = 0,
+         dtick = x_round/tick, ticks="outside"
+     ),
+                       yaxis = dict(
+         tickmode = 'linear',
+         tick0 = 0,
+         dtick = maximum/tick, ticks="outside"
+     ),
+                    plot_bgcolor= 'rgba(0,0,0,0)',
+                     )
+    fig.update_xaxes(showgrid=False,showline=True,linecolor='black')
+    fig.update_yaxes(showgrid=False,showline=True,linecolor='black')
+    
+    return fig
         
 def graph_figure_fitness_error(x_fitness,y_fitness,y_error,x_title,y_title,code,y_tick,name_set):
     #initialising global variables
@@ -312,13 +386,17 @@ def graph_figure_fitness_error(x_fitness,y_fitness,y_error,x_title,y_title,code,
      
 
     #creating scatter plot of robots
-    data = go.Scatter(
+    data = go.Scatter(marker_symbol = "x-thin",
         x=x_fitness,
         y=y_fitness,
         error_y=dict(
             type='data', # value of error bar given in data coordinates
             array=y_error,
             visible=True),
+        marker=dict(size = 8,
+             color = "blue",
+                              line=dict(width=2,
+                                        color = "Blue")),
         mode = 'markers',
         name = name_set,
     )
@@ -397,7 +475,7 @@ def graph_figure_fitness_error_max(x_fitness,y_fitness,y_error,x_title,y_title,c
              color = "blue",
                               line=dict(width=2,
                                         color = "Blue")),
-        name = name_set,
+        showlegend = False
     ))
         
     fig.add_trace(go.Scatter(
@@ -444,7 +522,8 @@ def graph_figure_fitness_error_max(x_fitness,y_fitness,y_error,x_title,y_title,c
              color = "blue",
                               line=dict(width=2,
                                         color = "Blue")),
-                             showlegend = False
+                             showlegend = True,
+                             name = name_set
      
     ))
 
@@ -485,6 +564,105 @@ def graph_figure_fitness_error_max(x_fitness,y_fitness,y_error,x_title,y_title,c
     
     return fig
 
+
+def graph_grid_style(x_positions,y_positions,maximum,length,title):
+
+    #fig = go.Figure(go.Layout(yaxis=dict(range=[-maximum, maximum]),xaxis = dict(range=[-maximum,maximum])))
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=x_positions,
+        y=y_positions,
+        mode='markers',
+        showlegend=True,
+        marker=dict(
+            symbol='circle',
+            opacity=0.8,
+            size=8,
+            line=dict(width=1),
+        )
+    ))
+  
+
+    fig.add_trace((go.Histogram2d(x=x_positions, y=y_positions,
+            autobinx=False,
+            xbins=dict(start=-maximum, end=maximum, size=2*maximum/length),
+            autobiny=False,
+            ybins=dict(start=-maximum, end=maximum, size=2*maximum/length),
+            zmax=1,            
+            zauto=False,
+            showscale = False,
+            colorscale=["white","white"],
+            )))
+    fig.update_xaxes(showgrid=True,showline=True, linewidth=2, linecolor='black',mirror=True)
+    fig.update_yaxes(showgrid=True,showline=True, linewidth=2, linecolor='black',mirror=True)
+    fig.update_xaxes(zeroline=False, gridwidth=1, gridcolor='black')
+    fig.update_yaxes(zeroline=False, gridwidth=1, gridcolor='black')
+    fig.update_traces(opacity=0.4, selector=dict(type='histogram2d'))
+    fig.update_layout(
+    #     height=900,width=1150,
+         xaxis = dict(#range=[-maximum, maximum],
+             tickmode = 'linear',
+             tick0 = 0,
+             dtick = maximum/(length*0.5)
+         ),
+                           yaxis = dict(#range=[-maximum, maximum],
+             tickmode = 'linear',
+             tick0 = 0,
+             dtick = maximum/(length*0.5)
+         ),
+        title = title,
+        xaxis_title="X Position (m)",
+        yaxis_title="Y Position (m)",
+        title_x=0.5
+    )
+    print("Maximum: ",maximum)
+    print("Length: ", length)
+    print("Maximum/Length: ", maximum/(length*0.5))
+    return fig
+def graph_no_grid_style(x_positions,y_positions,maximum,tick_given,title):
+    
+    #fig = go.Figure(go.Layout(yaxis=dict(range=[-maximum, maximum]),xaxis = dict(range=[-maximum,maximum])))
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=x_positions,
+        y=y_positions,
+        mode='markers',
+        showlegend=True,
+        marker=dict(
+            symbol='circle',
+            opacity=0.8,
+            size=8,
+            line=dict(width=1),
+        )
+    ))
+  
+
+    fig.update_xaxes(showline=True, linewidth=2, linecolor='black',mirror=True)
+    fig.update_yaxes(showline=True, linewidth=2, linecolor='black',mirror=True)
+    fig.update_xaxes(zeroline=True,showgrid = True)
+    fig.update_yaxes(zeroline=True, showgrid= True )
+    fig.update_traces(opacity=0.4, selector=dict(type='histogram2d'))
+    fig.update_layout(
+    #     height=900,width=1150,
+         xaxis = dict(range=[-maximum, maximum],
+             tickmode = 'linear',
+             tick0 = 0,
+             dtick = tick_given,
+             ticks="outside"
+         ),
+                           yaxis = dict(range=[-maximum, maximum],
+             tickmode = 'linear',
+             tick0 = 0,
+             dtick = tick_given,ticks="outside"
+         ),
+        title = title,
+        xaxis_title="X Position (m)",
+        yaxis_title="Y Position (m)",
+        title_x=0.5
+        
+    )
+
+    return fig
 
 
 def graph_types(x_0,y_0,x_1,y_1,maximum,length,title,annotation):
@@ -913,7 +1091,7 @@ def table_figure_dash(timer,robot_number,R,G,power,max_force,max_speed,min_neigh
     fig = go.Figure(data=[go.Table(header=dict(values=['<b>Simulation Parameters</b>','<b>Values</b>'],
                             line_color='black',
                             font=dict(color='black', size=17)),
-                            cells=dict(values=[[ '<b>Simulation Timestep (h:min:s)</b>','<b>Number of Robots</b>','<b>Communication Range (m)</b>', '<b>Gravitational Constant</b>','<b>Power</b>','<b>Max Force (N)</b>', '<b>Max Speed (m/s)</b>', '<b>Minimum Neighbour Average (m)</b>', '<b>Average Cluster Size</b>'], [str(datetime.timedelta(seconds=timer)),robot_number,R,G,power,max_force,max_speed,min_neighbours,cluster_average]],align='center',line_color='black'))])
+                            cells=dict(values=[[ '<b>Simulation Timestep (h:min:s)</b>','<b>Number of Robots</b>','<b>Communication Range (m)</b>', '<b>Gravitational Constant</b>','<b>Power</b>','<b>Max Force (N)</b>', '<b>Max Speed (m/s)</b>', '<b>Minimum Neighbour Average (m)</b>', '<b>Average Cluster Size</b>'], [str(datetime.timedelta(seconds=timer)),robot_number,R,G,power,max_force,max_speed,round(min_neighbours,2),cluster_average]],align='center',line_color='black'))])
     fig.update_layout(width = 650, height = 800,margin=dict(
 t=260, # top margin: 30px, you want to leave around 30 pixels to
               # display the modebar above the graph.
